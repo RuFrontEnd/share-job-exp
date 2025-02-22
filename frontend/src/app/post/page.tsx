@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Star } from "lucide-react";
+import Quill from "quill";
+import "quill/dist/quill.snow.css"; // Quill 的基本樣式
 
 // 投稿頁面 Component
 export default function PostPage() {
@@ -14,60 +16,61 @@ export default function PostPage() {
   const [selectedCompany, setSelectedCompany] = useState<any>(null);
   const [ratings, setRatings] = useState({
     salary: 0,
-    stress: 0,
+    comfort: 0, // 舒適度
     growth: 0
   });
   const [averageRating, setAverageRating] = useState(0);
-  const editorRef = useRef<any>(null);
+  const quillRef = useRef<any>(null);
 
   useEffect(() => {
-    // Lazy Load EditorJS 與工具
-    async function loadEditor() {
-      const EditorJS = (await import("@editorjs/editorjs")).default;
-      const Header = (await import("@editorjs/header")).default;
-      const List = (await import("@editorjs/list")).default;
-
-      if (!editorRef.current) {
-        editorRef.current = new EditorJS({
-          holder: "editorjs",
-          tools: {
-            header: Header,
-            list: List
-          }
-        });
-      }
+    // 初始化 Quill
+    if (!quillRef.current) {
+      const quill = new Quill("#editorjs", {
+        theme: "snow",
+        modules: {
+          toolbar: [
+            [{ header: [1, 2, 3, false] }],
+            [{ size: ["small", false, "large", "huge"] }], // 字體大小
+            ["bold", "italic", "underline", "strike"],
+            [{ color: [] }, { background: [] }], // 換字色與背景色
+            [{ list: "ordered" }, { list: "bullet" }],
+            [{ align: [] }],
+            ["clean"]
+          ]
+        },
+        placeholder: "撰寫您的工作心得...",
+        formats: [
+          "header",
+          "size", // 支援字體大小
+          "bold",
+          "italic",
+          "underline",
+          "strike",
+          "color",
+          "background",
+          "list",
+          "align"
+        ]
+      });
+      quillRef.current = quill;
     }
-
-    loadEditor();
-
-    return () => {
-      if (editorRef.current) {
-        editorRef.current.destroy();
-        editorRef.current = null;
-      }
-    };
   }, []);
 
   useEffect(() => {
+    // 計算平均評分
     const salaryScore = ratings.salary * (1 / 3);
-    const stressScore = (5 - ratings.stress) * (1 / 3);
+    const comfortScore = ratings.comfort * (1 / 3);
     const growthScore = ratings.growth * (1 / 3);
-    const totalScore = salaryScore + stressScore + growthScore;
+    const totalScore = salaryScore + comfortScore + growthScore;
 
     setAverageRating(totalScore > 0 ? parseFloat(totalScore.toFixed(1)) : 0);
   }, [ratings]);
 
   const handleSubmit = () => {
-    if (editorRef.current) {
-      editorRef.current
-        .save()
-        .then((outputData: any) => {
-          console.log("Article data: ", outputData);
-          alert("文章已提交！");
-        })
-        .catch((error: any) => {
-          console.log("Saving failed: ", error);
-        });
+    if (quillRef.current) {
+      const content = quillRef.current.root.innerHTML;
+      console.log("Article content: ", content);
+      alert("文章已提交！");
     }
   };
 
@@ -110,15 +113,15 @@ export default function PostPage() {
         <h3 className="text-xl font-bold mb-4 text-gray-800">文章內容</h3>
         <div
           id="editorjs"
-          className="w-full border border-gray-300 rounded-lg p-4 bg-white min-h-[300px]"
+          className="w-full border border-gray-300 rounded-lg bg-white min-h-[300px]"
         />
       </div>
 
       {/* 評價區 */}
       <div className="mb-10">
         <h3 className="text-xl font-bold mb-4 text-gray-800">整體評價</h3>
-        {["薪資評分", "壓力程度", "成長性"].map((label, index) => {
-          const keys = ["salary", "stress", "growth"] as const;
+        {["薪資評分", "舒適度", "成長性"].map((label, index) => {
+          const keys = ["salary", "comfort", "growth"] as const;
           return (
             <div className="mb-6" key={index}>
               <label className="block text-base font-semibold mb-2">

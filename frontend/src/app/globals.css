@@ -38,3 +38,8 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.ql-editor {
+  font-size: 18px; /* 調整預設字體大小，比預設 16px 大 */
+  line-height: 1.6; /* 調整行高，讓文字更易讀 */
+}
