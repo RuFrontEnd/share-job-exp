@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search, User, Edit3, LogIn, ThumbsUp, ThumbsDown } from "lucide-react";
-import Image from "next/image";
+import Block from "@/components/block";
 
 export default function Home() {
   const [search, setSearch] = useState("");
@@ -123,42 +123,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-      {/* Navbar */}
-      <nav className="bg-white shadow py-4 px-6 flex justify-between items-center border-b border-gray-200">
-        <div className="flex items-center gap-2">
-          <Image src="/logo.png" alt="Logo" width={40} height={40} />
-          <h1 className="text-xl font-bold text-indigo-600">專業職場</h1>
-        </div>
-        <div className="flex items-center gap-4">
-          <button
-            className="flex items-center bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition-colors"
-            onClick={handlePostRedirect}
-          >
-            <Edit3 className="w-5 h-5 mr-2" /> 我要投稿
-          </button>
-          <div className="flex items-center gap-2">
-            {isAuthenticated ? (
-              <>
-                <User className="w-6 h-6 text-indigo-500" />
-                <span
-                  className="text-gray-800 font-medium cursor-pointer"
-                  onClick={handleProfileRedirect}
-                >
-                  會員名稱
-                </span>
-              </>
-            ) : (
-              <button
-                className="flex items-center text-indigo-500 hover:underline"
-                onClick={handleAuthRedirect}
-              >
-                <LogIn className="w-5 h-5 mr-2" /> 註冊 / 登入
-              </button>
-            )}
-          </div>
-        </div>
-      </nav>
-
       {/* Hero Section */}
       <header className="text-center py-12 bg-gradient-to-r from-blue-50 to-blue-200">
         <h2 className="text-3xl font-bold text-gray-800">
@@ -186,11 +150,10 @@ export default function Home() {
       {/* Article List */}
       <div className="max-w-3xl mx-auto mt-6 px-4">
         {articles.map((article) => (
-          <div
+          <Block
+            className={`${article.locked ? "" : "cursor-pointer"}`}
             key={article.id}
-            className={`relative bg-white shadow rounded-lg p-6 mb-6 border border-gray-200 transition-transform duration-300 ${
-              article.locked ? "" : "cursor-pointer"
-            }`}
+            onClick={() => !article.locked && handleArticleClick(article.id)}
             style={{
               transform: article.locked ? "none" : "scale(1)",
               transition: "transform 0.3s"
@@ -205,7 +168,6 @@ export default function Home() {
                 e.currentTarget.style.transform = "scale(1)";
               }
             }}
-            onClick={() => !article.locked && handleArticleClick(article.id)}
           >
             {/* 主要資訊：公司名稱與其他資訊 */}
             <div className="flex justify-between items-start">
@@ -332,18 +294,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-
-            {/* 解鎖 / 已解鎖 按鈕 (放在觀看評比下一行) */}
-            <div className="mt-4 flex justify-end">
-              {article.locked ? (
-                <button className="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition-colors">
-                  🔒 解鎖 ($5)
-                </button>
-              ) : (
-                <span className="text-indigo-600 font-semibold">已解鎖</span>
-              )}
-            </div>
-          </div>
+          </Block>
         ))}
       </div>
     </div>

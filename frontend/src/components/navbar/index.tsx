@@ -1,44 +1,63 @@
-export default function Navbar() {
+"use client";
+
+import { useRouter } from "next/navigation";
+import { User, Edit3, LogIn } from "lucide-react";
+import Image from "next/image";
+
+export default function Navbar({ isAuthenticated = true }) {
+  const router = useRouter();
+
+  const handleHomeRedirect = () => {
+    router.push("/");
+  };
+
+  const handleAuthRedirect = () => {
+    router.push("/auth");
+  };
+
+  const handleProfileRedirect = () => {
+    router.push("/profile");
+  };
+
+  const handlePostRedirect = () => {
+    router.push("/post");
+  };
+
   return (
-    <nav className="navbar rounded-box shadow">
-      <div className="w-full md:flex md:items-center md:gap-2">
-        <div className="flex items-center justify-between">
-          <div className="navbar-start items-center justify-between max-md:w-full">
-            <a
-              className="link text-base-content link-neutral text-xl font-semibold no-underline"
-              href="#"
-            >
-              Share
-            </a>
-            <div className="md:hidden">
-              <button
-                type="button"
-                className="collapse-toggle btn btn-outline btn-secondary btn-sm btn-square"
-                data-collapse="#default-navbar-collapse"
-                aria-controls="default-navbar-collapse"
-                aria-label="Toggle navigation"
-              >
-                <span className="icon-[tabler--menu-2] collapse-open:hidden size-4"></span>
-                <span className="icon-[tabler--x] collapse-open:block hidden size-4"></span>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div
-          id="default-navbar-collapse"
-          className="md:navbar-end collapse hidden grow basis-full overflow-hidden transition-[height] duration-300 max-md:w-full"
+    <nav className="bg-white shadow py-4 px-6 flex justify-between items-center border-b border-gray-200">
+      <div
+        className="flex items-center gap-2 cursor-pointer"
+        onClick={handleHomeRedirect}
+      >
+        <Image src="/logo.png" alt="Logo" width={40} height={40} />
+        <h1 className="text-xl font-bold text-indigo-600">專業職場</h1>
+      </div>
+      <div className="flex items-center gap-4">
+        <button
+          className="flex items-center bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition-colors"
+          onClick={handlePostRedirect}
         >
-          <ul className="menu md:menu-horizontal gap-2 p-0 text-base max-md:mt-2">
-            <li>
-              <a href="#">Home</a>
-            </li>
-            <li>
-              <a href="#">Services</a>
-            </li>
-            <li>
-              <a href="#">Contact us</a>
-            </li>
-          </ul>
+          <Edit3 className="w-5 h-5 mr-2" /> 我要投稿
+        </button>
+        <div className="flex items-center gap-2">
+          {isAuthenticated ? (
+            <>
+              <User className="w-6 h-6 text-indigo-500" />
+              <span
+                className="text-gray-800 font-medium cursor-pointer"
+                onClick={handleProfileRedirect}
+              >
+                會員名稱
+              </span>
+            </>
+          ) : (
+            <button
+              className="flex items-center text-indigo-500 hover:underline"
+              onClick={handleAuthRedirect}
+            >
+              <LogIn className="w-5 h-5 mr-2" /> 註冊 / 登入
+            </button>
+          )}
         </div>
       </div>
     </nav>
