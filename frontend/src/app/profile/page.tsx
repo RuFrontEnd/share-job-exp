@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Edit3, ThumbsUp, ThumbsDown } from "lucide-react";
 import HeaderBlock from "@/components/headerBlock";
 import Block from "@/components/block";
+import Button from "@/components/button";
 
 export default function ProfilePage() {
   // 文章介面，包含首頁文章格所需屬性
@@ -130,27 +131,24 @@ export default function ProfilePage() {
           <div className="flex justify-between items-center pb-2 border-b">
             <h2 className="text-2xl font-bold text-gray-800">基本資料</h2>
             {isEditing ? (
-              <div className="space-x-2">
-                <button
-                  className="px-4 py-1 bg-green-500 text-white rounded-md"
+              <div className="space-x-2 flex">
+                <Button
                   onClick={handleSave}
-                >
-                  Save
-                </button>
-                <button
-                  className="px-4 py-1 bg-gray-500 text-white rounded-md"
+                  text="Save"
+                  className="bg-green-500 hover:bg-green-600"
+                />
+                <Button
                   onClick={handleCancel}
-                >
-                  Cancel
-                </button>
+                  text="Cancel"
+                  className="bg-gray-500 hover:bg-gray-600"
+                />
               </div>
             ) : (
-              <button
-                className="flex items-center text-blue-600 hover:underline"
+              <Button
                 onClick={() => setIsEditing(true)}
-              >
-                <Edit3 className="w-5 h-5 mr-1" /> 編輯
-              </button>
+                text="編輯"
+                icon={<Edit3 className="w-5 h-5" />}
+              />
             )}
           </div>
           {isEditing ? (

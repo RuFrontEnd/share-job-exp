@@ -35,7 +35,7 @@ export default function Navbar({ isAuthenticated = true }) {
       </div>
       <div className="flex items-center gap-4">
         <Button
-          icon={<Edit3 className="w-5 h-5 mr-2" />}
+          icon={<Edit3 className="w-5 h-5" />}
           text={"我要投稿"}
           onClick={handlePostRedirect}
         />
