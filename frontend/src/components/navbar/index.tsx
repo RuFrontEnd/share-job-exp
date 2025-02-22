@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { User, Edit3, LogIn } from "lucide-react";
 import Image from "next/image";
+import Button from "@/components/button";
 
 export default function Navbar({ isAuthenticated = true }) {
   const router = useRouter();
@@ -33,12 +34,11 @@ export default function Navbar({ isAuthenticated = true }) {
         <h1 className="text-xl font-bold text-indigo-600">專業職場</h1>
       </div>
       <div className="flex items-center gap-4">
-        <button
-          className="flex items-center bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition-colors"
+        <Button
+          icon={<Edit3 className="w-5 h-5 mr-2" />}
+          text={"我要投稿"}
           onClick={handlePostRedirect}
-        >
-          <Edit3 className="w-5 h-5 mr-2" /> 我要投稿
-        </button>
+        />
         <div className="flex items-center gap-2">
           {isAuthenticated ? (
             <>
