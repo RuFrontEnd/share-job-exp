@@ -7,20 +7,7 @@ import Block from "@/components/block";
 
 export default function Home() {
   const [search, setSearch] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const router = useRouter();
-
-  const handleAuthRedirect = () => {
-    router.push("/auth");
-  };
-
-  const handleProfileRedirect = () => {
-    router.push("/profile");
-  };
-
-  const handlePostRedirect = () => {
-    router.push("/post");
-  };
 
   const handleArticleClick = (id: number) => {
     router.push(`/article/${id}`);
@@ -151,7 +138,7 @@ export default function Home() {
       <div className="max-w-3xl mx-auto mt-6 px-4">
         {articles.map((article) => (
           <Block
-            className={`${article.locked ? "" : "cursor-pointer"}`}
+            className={`mb-6 ${article.locked ? "" : "cursor-pointer"}`}
             key={article.id}
             onClick={() => !article.locked && handleArticleClick(article.id)}
             style={{
