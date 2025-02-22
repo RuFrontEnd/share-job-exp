@@ -236,7 +236,7 @@ export default function Home() {
                 <span className="ml-2 text-gray-800 font-semibold">
                   {(
                     (article.salaryRating +
-                      article.pressureRating +
+                      (6 - article.pressureRating) +
                       article.growthRating) /
                     3
                   ).toFixed(1)}
@@ -254,17 +254,21 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <span className="mr-1 font-semibold text-gray-500">壓力</span>
+                  <span className="mr-1 font-semibold text-gray-500">
+                    舒適度
+                  </span>
                   <div className="text-yellow-500">
                     {Array.from({ length: 5 }, (_, i) => (
                       <span key={i}>
-                        {i < Math.floor(article.pressureRating) ? "★" : "☆"}
+                        {i < Math.floor(6 - article.pressureRating) ? "★" : "☆"}
                       </span>
                     ))}
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <span className="mr-1 font-semibold text-gray-500">成長</span>
+                  <span className="mr-1 font-semibold text-gray-500">
+                    成長性
+                  </span>
                   <div className="text-yellow-500">
                     {Array.from({ length: 5 }, (_, i) => (
                       <span key={i}>
