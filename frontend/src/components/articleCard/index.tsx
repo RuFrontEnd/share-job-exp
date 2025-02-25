@@ -73,9 +73,6 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
             <span className="mt-1 text-sm text-gray-500">
               {article.uniNumber}
             </span>
-            <span className="text-sm text-gray-500">
-              UID<span className="ml-1 font-bold">{article.id}</span>
-            </span>
           </div>
           <span className="text-sm text-gray-500">{article.postTime}</span>
         </div>
@@ -137,7 +134,10 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
 
         {/* 解鎖按鈕／已解鎖文字 */}
         {showUnlockButton && (
-          <div className="mt-4 flex justify-end">
+          <div className="mt-4 flex justify-between items-end">
+            <span className="text-sm text-gray-500">
+              UID<span className="ml-1 font-bold">{article.id}</span>
+            </span>
             {article.locked ? (
               <button className="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition-colors">
                 🔒 解鎖 ($5)

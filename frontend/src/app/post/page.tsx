@@ -197,6 +197,23 @@ export default function PostPage() {
   return (
     <>
       <HeaderBlock title="撰寫心得" subtitle="歡迎分享您的實際經驗" />
+      <div className="bg-blue-100 border-blue-500 text-blue-700 rounded-md">
+        <div className="container p-8 mx-auto">
+          <ol className="list-disc pl-5 space-y-2 list-none">
+            <li>1. 歡迎分享150字以上之工作心得。</li>
+            <li>
+              2. 文章價格供您自行訂定，但不可低於新台幣50元，可依據您個人認定內容之價值調整價格。
+            </li>
+            <li>3. 文章價格會加上新台幣10元平台營運費用作為最終定價。</li>
+            <li>
+              4. 文章經由觀看者解鎖後，分潤為發文者獲取「自訂價格」之50%，平台獲取「自訂價格」之50%以及平台營運費（新台幣10元）。
+            </li>
+            <li>
+              5. 文章會經過人工審核，切勿發表暴力、情色、詐騙資訊、單純謾罵抹黑或任何其它可能觸法之內容。
+            </li>
+          </ol>
+        </div>
+      </div>
       <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto p-8">
           {/* 公司搜尋 */}
