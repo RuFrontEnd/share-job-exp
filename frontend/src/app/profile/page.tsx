@@ -23,14 +23,20 @@ export default function ProfilePage() {
     locked: boolean;
   }
 
-  // 個人資料介面，包含基本資料、學歷資訊與文章列表
+  // 轉帳帳戶細節介面
+  interface TransferAccount {
+    bankCode: string;
+    accountName: string;
+    accountNumber: string;
+  }
+
+  // 個人資料介面，包含基本資料與文章列表（轉帳帳戶以物件呈現）
   interface UserType {
     realName: string;
     nickname: string;
     email: string;
     password: string;
-    account: string;
-    education: string;
+    transferAccount: TransferAccount;
     articles: Article[];
     unlocked: Article[];
   }
@@ -41,8 +47,11 @@ export default function ProfilePage() {
     nickname: "工作達人",
     email: "example@example.com",
     password: "********",
-    account: "1234-5678-9012",
-    education: "國立台灣大學 資訊工程學士",
+    transferAccount: {
+      bankCode: "001",
+      accountName: "王小明",
+      accountNumber: "1234567890123456"
+    },
     articles: [
       {
         id: 1,
@@ -94,81 +103,89 @@ export default function ProfilePage() {
   // 用於分頁切換，目前有「發表的文章」與「解鎖的文章」
   const [selectedTab, setSelectedTab] = useState("articles");
 
-  // 以下為「個人基本資料」部分（包含編輯功能）
-  const [isEditing, setIsEditing] = useState(false);
-  const [profileData, setProfileData] = useState({
-    realName: initialProfile.realName,
-    nickname: initialProfile.nickname,
-    email: initialProfile.email,
-    password: initialProfile.password,
-    account: initialProfile.account,
-    education: initialProfile.education
-  });
+  // 共用的個人資料狀態
+  const [profileData, setProfileData] = useState(initialProfile);
+  // 分別控制基本資料與轉帳帳戶區塊的編輯狀態
+  const [isEditingPersonal, setIsEditingPersonal] = useState(false);
+  const [isEditingTransfer, setIsEditingTransfer] = useState(false);
 
-  const handleSave = () => {
-    // 此處可加入 API 呼叫更新資料
-    setIsEditing(false);
+  // 基本資料區塊的儲存與取消
+  const handlePersonalSave = () => {
+    // 可在此加入 API 呼叫更新基本資料
+    setIsEditingPersonal(false);
   };
 
-  const handleCancel = () => {
-    setProfileData({
+  const handlePersonalCancel = () => {
+    setProfileData((prev) => ({
+      ...prev,
       realName: initialProfile.realName,
       nickname: initialProfile.nickname,
-      email: initialProfile.email,
-      password: initialProfile.password,
-      account: initialProfile.account,
-      education: initialProfile.education
-    });
-    setIsEditing(false);
+      email: initialProfile.email
+    }));
+    setIsEditingPersonal(false);
   };
 
-  // 渲染個人基本資料（含編輯功能），使用卡片風格框起來
-  const renderBasicInfo = () => {
+  // 轉帳帳戶區塊的儲存與取消
+  const handleTransferSave = () => {
+    // 可在此加入 API 呼叫更新轉帳帳戶資料
+    setIsEditingTransfer(false);
+  };
+
+  const handleTransferCancel = () => {
+    setProfileData((prev) => ({
+      ...prev,
+      transferAccount: initialProfile.transferAccount
+    }));
+    setIsEditingTransfer(false);
+  };
+
+  // 渲染基本資料區塊（基本資料與編輯功能）
+  const renderPersonalInfo = () => {
     return (
       <Block>
         <div className="space-y-6 text-lg">
-          {/* 標題與編輯按鈕 */}
           <div className="flex justify-between items-center pb-2 border-b">
             <h2 className="text-2xl font-bold text-gray-800">基本資料</h2>
-            {isEditing ? (
+            {isEditingPersonal ? (
               <div className="space-x-2 flex">
                 <Button
-                  onClick={handleSave}
+                  onClick={handlePersonalSave}
                   text="Save"
-                  className="bg-green-500 hover:bg-green-600"
+                  className="bg-green-500 hover:bg-green-600 text-white"
                 />
                 <Button
-                  onClick={handleCancel}
+                  onClick={handlePersonalCancel}
                   text="Cancel"
-                  className="bg-gray-500 hover:bg-gray-600"
+                  className="bg-red-500 hover:bg-red-600 text-white"
                 />
               </div>
             ) : (
               <Button
-                onClick={() => setIsEditing(true)}
+                onClick={() => setIsEditingPersonal(true)}
                 text="編輯"
                 icon={<Edit3 className="w-5 h-5" />}
               />
             )}
           </div>
-          {isEditing ? (
-            <div className="space-y-4">
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="font-bold text-gray-800">真實姓名</span>
+          <div className="space-y-4">
+            <div className="grid grid-cols-[100px_1fr] items-center">
+              <span className="font-bold text-gray-800">真實姓名</span>
+              {isEditingPersonal ? (
                 <input
                   type="text"
                   value={profileData.realName}
                   onChange={(e) =>
-                    setProfileData({
-                      ...profileData,
-                      realName: e.target.value
-                    })
+                    setProfileData({ ...profileData, realName: e.target.value })
                   }
                   className="w-full border border-gray-300 rounded px-2 py-1"
                 />
-              </div>
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="font-bold text-gray-800">暱稱</span>
+              ) : (
+                <span className="text-gray-800">{profileData.realName}</span>
+              )}
+            </div>
+            <div className="grid grid-cols-[100px_1fr] items-center">
+              <span className="font-bold text-gray-800">暱稱</span>
+              {isEditingPersonal ? (
                 <input
                   type="text"
                   value={profileData.nickname}
@@ -180,9 +197,13 @@ export default function ProfilePage() {
                   }
                   className="w-full border border-gray-300 rounded px-2 py-1"
                 />
-              </div>
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="font-bold text-gray-800">Email</span>
+              ) : (
+                <span className="text-gray-800">{profileData.nickname}</span>
+              )}
+            </div>
+            <div className="grid grid-cols-[100px_1fr] items-center">
+              <span className="font-bold text-gray-800">Email</span>
+              {isEditingPersonal ? (
                 <input
                   type="email"
                   value={profileData.email}
@@ -191,60 +212,115 @@ export default function ProfilePage() {
                   }
                   className="w-full border border-gray-300 rounded px-2 py-1"
                 />
-              </div>
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="font-bold text-gray-800">轉帳帳號</span>
-                <input
-                  type="text"
-                  value={profileData.account}
-                  onChange={(e) =>
-                    setProfileData({
-                      ...profileData,
-                      account: e.target.value
-                    })
-                  }
-                  className="w-full border border-gray-300 rounded px-2 py-1"
-                />
-              </div>
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="font-bold text-gray-800">學歷</span>
-                <input
-                  type="text"
-                  value={profileData.education}
-                  onChange={(e) =>
-                    setProfileData({
-                      ...profileData,
-                      education: e.target.value
-                    })
-                  }
-                  className="w-full border border-gray-300 rounded px-2 py-1"
-                />
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="font-bold text-gray-800">真實姓名</span>
-                <span className="text-gray-800">{profileData.realName}</span>
-              </div>
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="font-bold text-gray-800">暱稱</span>
-                <span className="text-gray-800">{profileData.nickname}</span>
-              </div>
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="font-bold text-gray-800">Email</span>
+              ) : (
                 <span className="text-gray-800">{profileData.email}</span>
-              </div>
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="font-bold text-gray-800">轉帳帳號</span>
-                <span className="text-gray-800">{profileData.account}</span>
-              </div>
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="font-bold text-gray-800">學歷</span>
-                <span className="text-gray-800">{profileData.education}</span>
-              </div>
+              )}
             </div>
-          )}
+          </div>
+        </div>
+      </Block>
+    );
+  };
+
+  // 渲染轉帳帳戶區塊（格式參考基本資料區塊，獨立編輯）
+  const renderTransferAccount = () => {
+    return (
+      <Block>
+        <div className="space-y-6 text-lg">
+          <div className="flex justify-between items-center pb-2 border-b">
+            <h2 className="text-2xl font-bold text-gray-800">轉帳帳戶</h2>
+            {isEditingTransfer ? (
+              <div className="space-x-2 flex">
+                <Button
+                  onClick={handleTransferSave}
+                  text="Save"
+                  className="bg-green-500 hover:bg-green-600 text-white"
+                />
+                <Button
+                  onClick={handleTransferCancel}
+                  text="Cancel"
+                  className="bg-red-500 hover:bg-red-600 text-white"
+                />
+              </div>
+            ) : (
+              <Button
+                onClick={() => setIsEditingTransfer(true)}
+                text="編輯"
+                icon={<Edit3 className="w-5 h-5" />}
+              />
+            )}
+          </div>
+          <div className="space-y-4">
+            <div className="grid grid-cols-[100px_1fr] items-center">
+              <span className="font-bold text-gray-800">銀行代碼</span>
+              {isEditingTransfer ? (
+                <input
+                  type="text"
+                  value={profileData.transferAccount.bankCode}
+                  onChange={(e) =>
+                    setProfileData({
+                      ...profileData,
+                      transferAccount: {
+                        ...profileData.transferAccount,
+                        bankCode: e.target.value
+                      }
+                    })
+                  }
+                  className="w-full border border-gray-300 rounded px-2 py-1"
+                />
+              ) : (
+                <span className="text-gray-800">
+                  {profileData.transferAccount.bankCode}
+                </span>
+              )}
+            </div>
+            <div className="grid grid-cols-[100px_1fr] items-center">
+              <span className="font-bold text-gray-800">戶名</span>
+              {isEditingTransfer ? (
+                <input
+                  type="text"
+                  value={profileData.transferAccount.accountName}
+                  onChange={(e) =>
+                    setProfileData({
+                      ...profileData,
+                      transferAccount: {
+                        ...profileData.transferAccount,
+                        accountName: e.target.value
+                      }
+                    })
+                  }
+                  className="w-full border border-gray-300 rounded px-2 py-1"
+                />
+              ) : (
+                <span className="text-gray-800">
+                  {profileData.transferAccount.accountName}
+                </span>
+              )}
+            </div>
+            <div className="grid grid-cols-[100px_1fr] items-center">
+              <span className="font-bold text-gray-800">帳號</span>
+              {isEditingTransfer ? (
+                <input
+                  type="text"
+                  value={profileData.transferAccount.accountNumber}
+                  onChange={(e) =>
+                    setProfileData({
+                      ...profileData,
+                      transferAccount: {
+                        ...profileData.transferAccount,
+                        accountNumber: e.target.value
+                      }
+                    })
+                  }
+                  className="w-full border border-gray-300 rounded px-2 py-1"
+                />
+              ) : (
+                <span className="text-gray-800">
+                  {profileData.transferAccount.accountNumber}
+                </span>
+              )}
+            </div>
+          </div>
         </div>
       </Block>
     );
@@ -402,14 +478,14 @@ export default function ProfilePage() {
   // 根據選擇的分頁渲染對應文章列表
   const renderArticlesContent = () => {
     if (selectedTab === "articles") {
-      return initialProfile.articles.length > 0 ? (
-        initialProfile.articles.map((article) => renderArticleGrid(article))
+      return profileData.articles.length > 0 ? (
+        profileData.articles.map((article) => renderArticleGrid(article))
       ) : (
         <p className="text-gray-800">目前沒有發表任何文章</p>
       );
     } else if (selectedTab === "unlocked") {
-      return initialProfile.unlocked.length > 0 ? (
-        initialProfile.unlocked.map((article) => renderArticleGrid(article))
+      return profileData.unlocked.length > 0 ? (
+        profileData.unlocked.map((article) => renderArticleGrid(article))
       ) : (
         <p className="text-gray-800">目前沒有已解鎖的文章</p>
       );
@@ -421,8 +497,11 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
       {/* 頁首 */}
       <HeaderBlock title="個人中心" subtitle="歡迎來到您的個人中心" />
-      {/* 個人基本資料區 */}
-      <div className="max-w-6xl mx-auto px-4 pt-10">{renderBasicInfo()}</div>
+      {/* 個人資料區：基本資料與轉帳帳戶 */}
+      <div className="max-w-6xl mx-auto px-4 pt-10 space-y-6">
+        {renderPersonalInfo()}
+        {renderTransferAccount()}
+      </div>
       {/* 文章分頁區 */}
       <div className="max-w-6xl mx-auto px-4 py-10">
         <div className="flex flex-col md:flex-row gap-8">

@@ -285,24 +285,6 @@ export default function PostPage() {
             </select>
           </div>
 
-          {/* 是否公開學歷 */}
-          <div className="mb-10 w-full">
-            <label className="block text-xl font-semibold mb-2 text-gray-800">
-              是否公開學歷
-            </label>
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                checked={isEducationPublic}
-                onChange={(e) => setIsEducationPublic(e.target.checked)}
-                className="h-5 w-5 text-blue-600 focus:ring-blue-300 border-gray-200 rounded"
-              />
-              <span className="ml-2 text-base text-gray-700">
-                公開我的學歷資訊
-              </span>
-            </div>
-          </div>
-
           {/* 年資 */}
           <div className="mb-10 w-full">
             <label className="block text-xl font-semibold mb-2 text-gray-800">
