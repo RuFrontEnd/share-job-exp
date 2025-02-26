@@ -32,10 +32,7 @@ import * as routes from "./routes";
   // load router
   for (const Route of Object.values(routes)) {
     const route = new Route();
-    app.use(
-      `${route.getglobalPrefix()}${route.getPrefix()}`,
-      route.getRouter()
-    );
+    app.use(route.url, route.routes); // 這裡使用 route.url 與 route.routes
   }
 
   // 404

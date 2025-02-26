@@ -6,7 +6,7 @@ export default class Auth extends Route {
 
   constructor() {
     super();
-    this.prefix = '/auth'
+    this.prefix = "/auth"; // 設定 URL 前綴
     this.setRoutes();
   }
 

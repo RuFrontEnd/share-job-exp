@@ -3,21 +3,15 @@ import { Router } from "express";
 abstract class Route {
   protected router = Router();
   protected abstract setRoutes(): void;
-  protected globalPrefix: string = "/api";
-  protected prefix: string = "/";
+  protected prefix: string = ""; // default
 
-  public getglobalPrefix() {
-    return this.globalPrefix;
+  get url() {
+    return `/api${this.prefix}`; // 只回傳 URL 前綴
   }
 
-  public getPrefix() {
-    return this.prefix;
+  get routes() {
+    return this.router; // 回傳 Router 實例
   }
-
-  public getRouter() {
-    return this.router;
-  }
-
 }
 
 export default Route;
