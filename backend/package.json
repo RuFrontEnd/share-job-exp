@@ -6,7 +6,10 @@
   "scripts": {
     "start": "nodemon src/app.ts",
     "build": "tsc --project ./",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "mgc": "node-pg-migrate create",
+    "mgup": "node-pg-migrate up",
+    "mgdown": "node-pg-migrate down"
   },
   "author": "",
   "license": "ISC",
@@ -30,6 +33,7 @@
     "@types/pg": "^8.11.11",
     "@types/validator": "^13.11.9",
     "colors": "^1.4.0",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "node-pg-migrate": "^7.9.1"
   }
 }
